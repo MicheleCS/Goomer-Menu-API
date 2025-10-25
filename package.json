@@ -4,16 +4,27 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "typeorm": "npx ts-node -r dotenv/config -r reflect-metadata --files ./node_modules/typeorm/cli.js -d ./src/ormconfig.ts",
+    "migration:generate": "npm run typeorm migration:generate src/shared/database/migrations/initial-schema",    "migration:run": "npm run typeorm migration:run",
+    "migration:create": "npm run typeorm migration:create",
+    "migration:revert": "npm run typeorm migration:revert",
+    "dev": "ts-node -r reflect-metadata index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.27"
   },
   "devDependencies": {
-    "@types/pg": "^8.15.5"
+    "@types/node": "^24.9.1",
+    "@types/pg": "^8.15.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }
