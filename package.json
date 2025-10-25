@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "typeorm": "npx ts-node -r dotenv/config -r reflect-metadata --files ./node_modules/typeorm/cli.js -d ./src/ormconfig.ts",
-    "migration:generate": "npm run typeorm migration:generate src/shared/database/migrations/initial-schema",    "migration:run": "npm run typeorm migration:run",
+    "migration:generate": "npm run typeorm migration:generate src/shared/database/migrations/initial-schema",
+    "migration:run": "npm run typeorm migration:run",
     "migration:create": "npm run typeorm migration:create",
     "migration:revert": "npm run typeorm migration:revert",
-    "dev": "ts-node -r reflect-metadata index.ts"
+    "dev": "ts-node -r reflect-metadata index.ts",
+    "lint": "eslint .", 
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [],
   "author": "",
@@ -24,7 +28,14 @@
   "devDependencies": {
     "@types/node": "^24.9.1",
     "@types/pg": "^8.15.5",
+    "@typescript-eslint/eslint-plugin": "^8.46.2",
+    "@typescript-eslint/parser": "^8.46.2",
+    "eslint": "^9.38.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.2"
   }
 }
