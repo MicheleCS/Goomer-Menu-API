@@ -1,12 +1,12 @@
 interface IProductRepository {
-  create(data: Omit<IProduct, 'id'>): Promise<IProduct>;
-  findAll(): Promise<IProduct[]>;
+  create(data: Omit<Product, 'id'>): Promise<Product>;
+  findAll(): Promise<Product[]>;
   delete(id: number): Promise<void>;
-  findById(id: number): Promise<IProduct | null>;
+  findById(id: number): Promise<Product | null>;
 }
 
+import { Product } from '@shared/database/entities/products.entity';
 import { Pool, PoolClient, QueryResult } from 'pg';
-import { IProduct } from '../database/entities/products.entity';
 
 export class ProductRepository implements IProductRepository {
   private readonly pool: Pool;
@@ -16,15 +16,15 @@ export class ProductRepository implements IProductRepository {
       this.pool = pool;
   }
 
-  private mapRowToProduct(row: any): IProduct {
+  private mapRowToProduct(row: any): Product {
       return {
           id: row.id,
           name: row.name,
           price: parseFloat(row.price),
-      } as IProduct;
+      } as Product;
   }
 
-  async create(data: Omit<IProduct, 'id'>): Promise<IProduct> {
+  async create(data: Omit<Product, 'id'>): Promise<Product> {
       const { name, price } = data;
       
       const sql = `
@@ -44,7 +44,7 @@ export class ProductRepository implements IProductRepository {
       return this.mapRowToProduct(result.rows[0]); 
   }
 
-  async findAll(): Promise<IProduct[]> {
+  async findAll(): Promise<Product[]> {
       const sql = `SELECT * FROM ${this.TABLE_NAME} ORDER BY id ASC;`;
 
       const result: QueryResult = await this.pool.query(sql);
@@ -58,7 +58,7 @@ export class ProductRepository implements IProductRepository {
       await this.pool.query(sql, [id]);
   }
 
-  async findById(id: number): Promise<IProduct | null> {
+  async findById(id: number): Promise<Product | null> {
       const sql = `SELECT * FROM ${this.TABLE_NAME} WHERE id = $1;`;
       
       const result: QueryResult = await this.pool.query(sql, [id]);
@@ -68,4 +68,6 @@ export class ProductRepository implements IProductRepository {
       }
       return null;
   }
+
+  //lembrar de criar o update
 }

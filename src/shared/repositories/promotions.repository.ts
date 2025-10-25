@@ -1,16 +1,16 @@
 import { Pool, QueryResult } from 'pg';
-import { IPromotion } from '../database/entities/promotions.entity';
 import { DayOfWeek } from '../enums/dayOfWeek';
+import { Promotion } from '@shared/database/entities/promotions.entity';
 
 
-type CreatePromotionData = Omit<IPromotion, 'id'>;
+type CreatePromotionData = Omit<Promotion, 'id'>;
 
 export interface IPromotionRepository {
-    create(data: CreatePromotionData): Promise<IPromotion>;
-    findAll(): Promise<IPromotion[]>;
+    create(data: CreatePromotionData): Promise<Promotion>;
+    findAll(): Promise<Promotion[]>;
     delete(id: string): Promise<void>;
-    findById(id: string): Promise<IPromotion | null>;
-    findActiveByProductId(productId: string): Promise<IPromotion[]>;
+    findById(id: string): Promise<Promotion | null>;
+    findActiveByProductId(productId: string): Promise<Promotion[]>;
 }
 
 export class PromotionRepository implements IPromotionRepository {
@@ -21,7 +21,7 @@ export class PromotionRepository implements IPromotionRepository {
         this.pool = pool;
     }
 
-    private mapRowToPromotion(row: any): IPromotion {
+    private mapRowToPromotion(row: any): Promotion {
         return {
             id: row.id,
             productId: row.product_id,
@@ -31,10 +31,10 @@ export class PromotionRepository implements IPromotionRepository {
             startTime: row.start_time,
             endTime: row.end_time,
             visibility: row.visibility,
-        } as IPromotion;
+        } as Promotion;
     }
 
-    async create(data: CreatePromotionData): Promise<IPromotion> {
+    async create(data: CreatePromotionData): Promise<Promotion> {
         const { 
             productId, description, promotionalPrice, 
             daysOfWeek, startTime, endTime, visibility 
@@ -63,7 +63,7 @@ export class PromotionRepository implements IPromotionRepository {
         return this.mapRowToPromotion(result.rows[0]); 
     }
 
-    async findAll(): Promise<IPromotion[]> {
+    async findAll(): Promise<Promotion[]> {
         const sql = `SELECT * FROM ${this.TABLE_NAME} ORDER BY product_id ASC;`;
 
         const result: QueryResult = await this.pool.query(sql);
@@ -81,7 +81,7 @@ export class PromotionRepository implements IPromotionRepository {
         }
     }
 
-    async findById(id: string): Promise<IPromotion | null> {
+    async findById(id: string): Promise<Promotion | null> {
         const sql = `SELECT * FROM ${this.TABLE_NAME} WHERE id = $1;`;
         
         const result: QueryResult = await this.pool.query(sql, [id]);
@@ -92,7 +92,7 @@ export class PromotionRepository implements IPromotionRepository {
 
         return null;
     }
-    async findActiveByProductId(productId: string): Promise<IPromotion[]> {
+    async findActiveByProductId(productId: string): Promise<Promotion[]> {
         
         const sql = `
             SELECT * FROM ${this.TABLE_NAME}
