@@ -1,0 +1,113 @@
+openapi: 3.0.0
+info:
+  title: Goomer Menu API - Products
+  version: 1.0.0
+  description: API de gerenciamento de produtos e promoções.
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor de Desenvolvimento Local
+
+paths:
+  /products:
+    get:
+      summary: Lista todos os produtos
+      responses:
+        '200':
+          description: Lista de produtos recuperada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+    post:
+      summary: Cria um novo produto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: Produto criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+
+  /products/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      summary: Busca um produto por ID
+      responses:
+        '200':
+          description: Produto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Produto não encontrado
+    put:
+      summary: Atualiza um produto existente
+      # ... (similar ao POST)
+    delete:
+      summary: Deleta um produto por ID
+      responses:
+        '204':
+          description: Produto excluído com sucesso
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+        category:
+          type: string
+          description: Categoria do produto.
+          example: Entradas
+        visibility:
+          type: boolean
+          description: Define se o produto está visível para os clientes.
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ProductInput:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Pizza Grande
+        price:
+          type: number
+          format: float
+          example: 59.90
+        category:
+          type: string
+          description: Categoria do produto.
+          example: Entradas
+        visibility:
+          type: boolean
+          default: true
+      required:
+        - name
+        - price
+        - category
