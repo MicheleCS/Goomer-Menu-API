@@ -15,8 +15,10 @@
       "@config/*": ["config/*"],
       "@modules/*": ["modules/*"],
       "@shared/*": ["shared/*"],
-      "@dataMigrationFromLegacy/*": ["dataMigrationFromLegacy/*"]
-    }
+      "@dataMigrationFromLegacy/*": ["dataMigrationFromLegacy/*"],
+      "@repositories/*": ["shared/repositories/*"],
+      "@services/*": ["services/*"]   
+    },
   },
   "include": [
     "src"
