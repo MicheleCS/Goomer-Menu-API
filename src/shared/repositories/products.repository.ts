@@ -69,5 +69,29 @@ export class ProductRepository implements IProductRepository {
     return null;
   }
 
-  //lembrar de criar o update
+
+async update(id: number, data: Partial<Omit<Product, 'id'>>): Promise<Product | null> {
+    const fields = Object.keys(data);
+    if (fields.length === 0) {
+      return this.findById(id);
+    }
+
+    const setClauses = fields.map((field, index) => `${field} = $${index + 2}`).join(', ');
+    const values = [id, ...fields.map(field => (data as any)[field])];
+
+    const sql = `
+      UPDATE ${this.TABLE_NAME}
+      SET ${setClauses}
+      WHERE id = $1
+      RETURNING *;
+    `;
+    
+    const result: QueryResult = await this.pool.query(sql, values);
+
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    return this.mapRowToProduct(result.rows[0]);
+}
 }
