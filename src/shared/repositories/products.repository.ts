@@ -1,4 +1,4 @@
-interface IProductRepository {
+export interface IProductRepository {
   create(productData: CreateProductDto): Promise<Product>;
   findAll(): Promise<Product[]>;
   delete(id: string): Promise<void>;
