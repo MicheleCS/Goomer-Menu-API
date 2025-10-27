@@ -3,6 +3,7 @@ import { IPromotionRepository } from 'shared/repositories/promotions.repository.
 import { CreatePromotionDto } from 'shared/dtos/CreatePromotionDto.js';
 import { UpdatePromotionDto } from 'shared/dtos/UpdatePromotionDto.js';
 import { IProductRepository } from 'shared/repositories/products.repository.js';
+import { getCurrentDayOfWeek, getCurrentTime } from '../../utils/date.utils.js';
 
 export interface IPromotionService {
   createPromotion(data: CreatePromotionDto): Promise<Promotion>;
@@ -10,7 +11,7 @@ export interface IPromotionService {
   getPromotionById(id: string): Promise<Promotion>;
   updatePromotion(id: string, data: UpdatePromotionDto): Promise<Promotion>;
   deletePromotion(id: string): Promise<void>;
-  findActivePromotionsByProductId(productId: string): Promise<Promotion[]>;
+  getActiveMenuPromotions(): Promise<Promotion[]>;
 }
 
 export class PromotionService implements IPromotionService {
@@ -75,9 +76,16 @@ export class PromotionService implements IPromotionService {
     await this.promotionRepository.delete(id);
   }
 
-  async findActivePromotionsByProductId(
-    productId: string,
-  ): Promise<Promotion[]> {
-    return this.promotionRepository.findActiveByProductId(productId);
+  async getActiveMenuPromotions(): Promise<Promotion[]> {
+    const currentDay = getCurrentDayOfWeek();
+    const currentTime = getCurrentTime();
+
+    const activePromotions =
+      await this.promotionRepository.findActiveMenuPromotions(
+        currentDay,
+        currentTime,
+      );
+
+    return activePromotions;
   }
 }

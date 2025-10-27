@@ -30,6 +30,11 @@ export interface IProductController {
     res: Response,
     next: NextFunction,
   ): Promise<Response | void>;
+  findActiveMenuProducts(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void>;
 }
 
 export class ProductController implements IProductController {
@@ -123,6 +128,19 @@ export class ProductController implements IProductController {
 
       await this.productService.deleteProduct(id);
       return res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async findActiveMenuProducts(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> {
+    try {
+      const activeProducts = await this.productService.findActiveMenuProducts();
+      return res.status(200).json(activeProducts);
     } catch (error) {
       next(error);
     }

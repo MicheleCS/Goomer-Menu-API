@@ -3,7 +3,6 @@ import {
   IsString,
   IsNumber,
   IsNotEmpty,
-  IsBoolean,
   ArrayNotEmpty,
   ArrayUnique,
   IsArray,
@@ -40,8 +39,4 @@ export class CreatePromotionDto {
   @IsString()
   @Matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)
   endTime: string;
-
-  @IsNotEmpty()
-  @IsBoolean()
-  visibility: boolean;
 }

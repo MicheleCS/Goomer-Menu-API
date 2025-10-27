@@ -4,6 +4,7 @@ export interface IProductRepository {
   delete(id: string): Promise<void>;
   findById(id: string): Promise<Product | null>;
   update(id: string, productData: UpdateProductDto): Promise<Product>;
+  findActiveMenuProducts(): Promise<Product[]>;
 }
 
 import { Pool, QueryResult } from 'pg';
@@ -100,5 +101,16 @@ export class ProductRepository implements IProductRepository {
     }
 
     return this.mapRowToProduct(result.rows[0]);
+  }
+
+  async findActiveMenuProducts(): Promise<Product[]> {
+    const sql = `
+        SELECT 
+        *
+        FROM ${this.TABLE_NAME}
+        WHERE visibility = TRUE
+    `;
+    const result: QueryResult = await this.pool.query(sql);
+    return result.rows.map(this.mapRowToProduct);
   }
 }

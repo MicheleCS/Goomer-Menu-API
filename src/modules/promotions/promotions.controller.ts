@@ -31,11 +31,7 @@ export interface IPromotionController {
     res: Response,
     next: NextFunction,
   ): Promise<Response | void>;
-  findActiveByProductId(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<Response | void>;
+  getActiveMenuPromotions: (req: Request, res: Response) => Promise<void>;
 }
 
 export class PromotionController implements IPromotionController {
@@ -157,20 +153,18 @@ export class PromotionController implements IPromotionController {
     }
   }
 
-  async findActiveByProductId(
+  getActiveMenuPromotions = async (
     req: Request,
     res: Response,
-    next: NextFunction,
-  ): Promise<Response | void> {
+  ): Promise<void> => {
     try {
-      const productId: string = req.params.productId;
+      const activePromotions =
+        await this.promotionService.getActiveMenuPromotions();
 
-      const promotions =
-        await this.promotionService.findActivePromotionsByProductId(productId);
-
-      return res.status(200).json(promotions);
+      res.status(200).json(activePromotions);
     } catch (error) {
-      next(error);
+      console.error('Erro ao buscar promoções ativas para o menu:', error);
+      res.status(500).json({ message: 'Erro interno do servidor.' });
     }
-  }
+  };
 }

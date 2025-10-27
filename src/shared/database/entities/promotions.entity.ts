@@ -49,7 +49,4 @@ export class Promotion {
 
   @Column({ name: 'end_time', type: 'time', nullable: false })
   endTime!: string;
-
-  @Column({ type: 'boolean', default: true })
-  visibility!: boolean;
 }
