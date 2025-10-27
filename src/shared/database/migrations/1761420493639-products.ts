@@ -11,7 +11,7 @@ export class Products1761420493639 implements MigrationInterface {
             type: 'uuid',
             isPrimary: true,
             isGenerated: true,
-            generationStrategy: 'increment',
+            generationStrategy: 'uuid',
           },
           {
             name: 'name',
@@ -28,8 +28,8 @@ export class Products1761420493639 implements MigrationInterface {
           },
           {
             name: 'category',
-            type: 'enum',
-            enum: ['valor1', 'valor2', 'etc...'],
+            type: 'varchar',
+            length: '255',
             isNullable: false,
           },
           {

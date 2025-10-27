@@ -5,8 +5,8 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { DayOfWeek } from '../../enums/dayOfWeek';
-import { Product } from './products.entity';
+import { Product } from './products.entity.js';
+import { DayOfWeek } from 'shared/enums/dayOfWeek.js';
 
 @Entity('promotions')
 export class Promotion {

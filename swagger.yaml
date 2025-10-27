@@ -3,7 +3,6 @@ info:
   title: Goomer Menu API - Products
   version: 1.0.0
   description: API de gerenciamento de produtos e promoções.
-
 servers:
   - url: http://localhost:3000
     description: Servidor de Desenvolvimento Local
@@ -43,8 +42,9 @@ paths:
         in: path
         required: true
         schema:
-          type: integer
-          format: int64
+          type: string
+          format: uuid
+        description: ID (UUID) do produto.
     get:
       summary: Busca um produto por ID
       responses:
@@ -58,7 +58,22 @@ paths:
           description: Produto não encontrado
     put:
       summary: Atualiza um produto existente
-      # ... (similar ao POST)
+      operationId: updateProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductInput'
+      responses:
+        '200':
+          description: Produto atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Produto não encontrado
     delete:
       summary: Deleta um produto por ID
       responses:
@@ -71,7 +86,8 @@ components:
       type: object
       properties:
         id:
-          type: integer
+          type: string
+          format: uuid
         name:
           type: string
         price:
@@ -111,3 +127,18 @@ components:
         - name
         - price
         - category
+        - visibility
+    UpdateProductInput:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Pizza Média
+        price:
+          type: number
+          format: float
+          example: 45.00
+        category:
+          type: string
+        visibility:
+          type: boolean

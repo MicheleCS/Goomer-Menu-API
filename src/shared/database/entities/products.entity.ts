@@ -1,3 +1,4 @@
+import { ProductCategory } from '../../enums/productsCategory.js';
 import {
   Column,
   CreateDateColumn,
@@ -5,7 +6,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ProductCategory } from '../../enums/productsCategory';
 
 @Entity('products')
 export class Product {
@@ -19,11 +19,11 @@ export class Product {
   price!: number;
 
   @Column({
-    type: 'enum',
-    enum: ProductCategory,
+    type: 'varchar',
+    length: 255,
     nullable: false,
   })
-  category!: ProductCategory;
+  category!: string;
 
   @Column({ type: 'boolean', default: true })
   visibility!: boolean;
