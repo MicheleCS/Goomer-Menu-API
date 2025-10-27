@@ -1,4 +1,3 @@
-import { ProductCategory } from '../../enums/productsCategory.js';
 import {
   Column,
   CreateDateColumn,

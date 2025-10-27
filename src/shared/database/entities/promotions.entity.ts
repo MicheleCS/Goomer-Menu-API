@@ -13,20 +13,27 @@ export class Promotion {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ type: 'uuid', nullable: false })
+  @Column({ name: 'product_id', type: 'uuid', nullable: false })
   productId!: string;
 
   @ManyToOne(() => Product)
-  @JoinColumn({ name: 'productId' })
+  @JoinColumn({ name: 'product_id' })
   product!: Product;
 
   @Column({ type: 'varchar', length: 255, nullable: false })
   description!: string;
 
-  @Column({ type: 'numeric', precision: 10, scale: 2, nullable: false })
+  @Column({
+    name: 'promotional_price',
+    type: 'numeric',
+    precision: 10,
+    scale: 2,
+    nullable: false,
+  })
   promotionalPrice!: number;
 
   @Column({
+    name: 'days_of_week',
     type: 'jsonb',
     nullable: false,
     transformer: {
@@ -37,10 +44,10 @@ export class Promotion {
   })
   daysOfWeek!: DayOfWeek[];
 
-  @Column({ type: 'time', nullable: false })
+  @Column({ name: 'start_time', type: 'time', nullable: false })
   startTime!: string;
 
-  @Column({ type: 'time', nullable: false })
+  @Column({ name: 'end_time', type: 'time', nullable: false })
   endTime!: string;
 
   @Column({ type: 'boolean', default: true })
