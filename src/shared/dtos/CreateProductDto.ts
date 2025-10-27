@@ -1,9 +1,4 @@
-import {
-  IsNumber,
-  IsString,
-  IsBoolean,
-  IsNotEmpty,
-} from 'class-validator';
+import { IsNumber, IsString, IsBoolean, IsNotEmpty } from 'class-validator';
 import { ProductCategory } from '../../shared/enums/productsCategory.js';
 
 export class CreateProductDto {
