@@ -1,6 +1,6 @@
 import { Pool, QueryResult } from 'pg';
-import { DayOfWeek } from '../enums/dayOfWeek';
-import { Promotion } from '@shared/database/entities/promotions.entity';
+import { Promotion } from 'shared/database/entities/promotions.entity.js';
+import { DayOfWeek } from 'shared/enums/dayOfWeek.js';
 
 type CreatePromotionData = Omit<Promotion, 'id'>;
 

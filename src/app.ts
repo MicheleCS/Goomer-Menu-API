@@ -1,5 +1,5 @@
 import express, { Application } from 'express';
-import { IProductController } from './modules/products/products.controller.js'; // Caminho corrigido
+import { IProductController } from './modules/products/products.controller.js';
 import path from 'path';
 import { createProductRouter } from './routes/products.routes.js';
 import swaggerUi from 'swagger-ui-express';
