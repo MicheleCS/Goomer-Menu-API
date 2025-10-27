@@ -9,6 +9,7 @@ export interface IProductService {
   updateProduct(id: string, productData: UpdateProductDto): Promise<Product>;
   deleteProduct(id: string): Promise<void>;
   getProductById(id: string): Promise<Product>;
+  findActiveMenuProducts(): Promise<Product[]>;
 }
 
 export class ProductService implements IProductService {
@@ -62,5 +63,9 @@ export class ProductService implements IProductService {
   async deleteProduct(id: string): Promise<void> {
     await this.getProductById(id);
     await this.productRepository.delete(id);
+  }
+
+  async findActiveMenuProducts(): Promise<Product[]> {
+    return this.productRepository.findActiveMenuProducts();
   }
 }
