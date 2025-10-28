@@ -1,15 +1,24 @@
 openapi: 3.0.0
 info:
-  title: Goomer Menu API - Products
+  title: Goomer Menu API - Products and Promotions
   version: 1.0.0
   description: API de gerenciamento de produtos e promoções.
+
 servers:
   - url: http://localhost:3000
     description: Servidor de Desenvolvimento Local
 
+tags:
+  - name: Products
+    description: Operações relacionadas a produtos.
+  - name: Promotions
+    description: Operações relacionadas a promoções e descontos.
+
 paths:
   /products:
     get:
+      tags:
+        - Products
       summary: Lista todos os produtos
       responses:
         '200':
@@ -21,7 +30,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/Product'
     post:
+      tags:
+        - Products
       summary: Cria um novo produto
+      operationId: createProduct
       requestBody:
         required: true
         content:
@@ -35,6 +47,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Product'
+        '400':
+          description: Requisição inválida ou erro de validação
 
   /products/{id}:
     parameters:
@@ -46,7 +60,10 @@ paths:
           format: uuid
         description: ID (UUID) do produto.
     get:
+      tags:
+        - Products
       summary: Busca um produto por ID
+      operationId: getProductById
       responses:
         '200':
           description: Produto encontrado
@@ -57,6 +74,8 @@ paths:
         '404':
           description: Produto não encontrado
     put:
+      tags:
+        - Products
       summary: Atualiza um produto existente
       operationId: updateProduct
       requestBody:
@@ -75,10 +94,152 @@ paths:
         '404':
           description: Produto não encontrado
     delete:
+      tags:
+        - Products
       summary: Deleta um produto por ID
+      operationId: deleteProduct
       responses:
         '204':
           description: Produto excluído com sucesso
+
+  /promotions:
+    get:
+      tags:
+        - Promotions
+      summary: Lista todas as promoções
+      operationId: findAllPromotions
+      responses:
+        '200':
+          description: Lista de promoções recuperada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Promotion'
+    post:
+      tags:
+        - Promotions
+      summary: Cria uma nova promoção
+      operationId: createPromotion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePromotionInput'
+      responses:
+        '201':
+          description: Promoção criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+        '400':
+          description: Requisição inválida ou erro de validação
+  paths:
+  /products/active:
+    get:
+      tags:
+        - Products
+        - Menu
+      summary: Lista todos os produtos que estão visíveis para exibição no menu.
+      description: |
+        Retorna uma lista de produtos marcados como visivel.
+      operationId: getActiveMenuProducts
+      responses:
+        '200':
+          description: Uma lista de produtos visíveis.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '500':
+          description: Erro interno do servidor.
+  /promotions/active:
+    get:
+      tags:
+        - Promotions
+        - Menu
+      summary: Lista todas as promoções que estão ativas no dia e hora atuais para exibição no menu.
+      description: |
+        Retorna uma lista de promoções do dia e horário estipulado.
+      operationId: getActiveMenuPromotions
+      responses:
+        '200':
+          description: Uma lista de promoções ativas.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Promotion'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Erro interno do servidor.
+
+  /promotions/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID (UUID) da promoção.
+    get:
+      tags:
+        - Promotions
+      summary: Busca uma promoção por ID
+      operationId: getPromotionById
+      responses:
+        '200':
+          description: Promoção encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+        '404':
+          description: Promoção não encontrada
+    patch:
+      tags:
+        - Promotions
+      summary: Atualiza campos específicos de uma promoção
+      operationId: updatePromotion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePromotionInput'
+      responses:
+        '200':
+          description: Promoção atualizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+        '400':
+          description: Requisição inválida ou erro de validação
+        '404':
+          description: Promoção não encontrada
+    delete:
+      tags:
+        - Promotions
+      summary: Deleta uma promoção por ID
+      operationId: deletePromotion
+      responses:
+        '204':
+          description: Promoção excluída com sucesso
 
 components:
   schemas:
@@ -95,17 +256,22 @@ components:
           format: float
         category:
           type: string
-          description: Categoria do produto.
           example: Entradas
         visibility:
           type: boolean
-          description: Define se o produto está visível para os clientes.
         createdAt:
           type: string
           format: date-time
         updatedAt:
           type: string
           format: date-time
+      required:
+        - id
+        - name
+        - price
+        - category
+        - visibility
+
     ProductInput:
       type: object
       properties:
@@ -118,7 +284,6 @@ components:
           example: 59.90
         category:
           type: string
-          description: Categoria do produto.
           example: Entradas
         visibility:
           type: boolean
@@ -128,6 +293,7 @@ components:
         - price
         - category
         - visibility
+
     UpdateProductInput:
       type: object
       properties:
@@ -140,5 +306,121 @@ components:
           example: 45.00
         category:
           type: string
+        visibility:
+          type: boolean
+    
+    Promotion:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        description:
+          type: string
+        promotionalPrice:
+          type: number
+          format: float
+          example: 9.99
+        daysOfWeek:
+          type: array
+          items:
+            type: string
+            enum: [ "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo" ]
+          example: [ "Segunda", "Terça", "Quarta", "Quinta", "Sexta" ]
+        startTime:
+          type: string
+          format: time
+          pattern: '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'
+          example: "10:00"
+        endTime:
+          type: string
+          format: time
+          pattern: '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'
+          example: "22:00"
+        visibility:
+          type: boolean
+        product:
+          $ref: '#/components/schemas/Product'
+      required:
+        - id
+        - productId
+        - description
+        - promotionalPrice
+        - daysOfWeek
+        - startTime
+        - endTime
+        - visibility
+
+    CreatePromotionInput:
+      type: object
+      properties:
+        productId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        description:
+          type: string
+          example: 50% de desconto no item X
+        promotionalPrice:
+          type: number
+          format: float
+          example: 12.50
+        daysOfWeek:
+          type: array
+          items:
+            type: string
+            enum: [ "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo" ]
+          example: [ "Sábado", "Domingo" ]
+        startTime:
+          type: string
+          format: time
+          pattern: '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'
+          example: "18:00"
+        endTime:
+          type: string
+          format: time
+          pattern: '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'
+          example: "23:00"
+        visibility:
+          type: boolean
+          default: true
+      required:
+        - productId
+        - description
+        - promotionalPrice
+        - daysOfWeek
+        - startTime
+        - endTime
+        - visibility
+
+    UpdatePromotionInput:
+      type: object
+      properties:
+        description:
+          type: string
+          example: Promoção de Quarta-feira
+        promotionalPrice:
+          type: number
+          format: float
+          example: 8.00
+        daysOfWeek:
+          type: array
+          items:
+            type: string
+            enum: [ "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo" ]
+          example: [ "Quarta" ]
+        startTime:
+          type: string
+          format: time
+          pattern: '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'
+          example: "14:00"
+        endTime:
+          type: string
+          format: time
+          pattern: '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'
+          example: "17:00"
         visibility:
           type: boolean

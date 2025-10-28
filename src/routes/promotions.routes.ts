@@ -1,10 +1,12 @@
 import { Router } from 'express';
-import { IProductController } from 'modules/products/products.controller.js';
+import { IPromotionController } from 'modules/promotions/promotions.controller.js';
 
-export const createProductRouter = (controller: IProductController): Router => {
+export const createPromotionRouter = (
+  controller: IPromotionController,
+): Router => {
   const router = Router();
 
-  router.get('/active', controller.findActiveMenuProducts.bind(controller));
+  router.get('/active', controller.getActiveMenuPromotions.bind(controller));
 
   router.post('/', controller.create.bind(controller));
 
