@@ -5,6 +5,8 @@ import { createProductRouter } from './routes/products.routes.js';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import { fileURLToPath } from 'url';
+import { IPromotionController } from './modules/promotions/promotions.controller.js';
+import { createPromotionRouter } from './routes/promotions.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -14,6 +16,7 @@ const swaggerSpec = YAML.load(path.join(__dirname, '..', 'swagger.yaml'));
 
 export const createApp = (
   productController: IProductController,
+  promotionController: IPromotionController,
 ): Application => {
   const app = express();
 
@@ -22,6 +25,8 @@ export const createApp = (
   app.use('/goomer', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
   app.use('/products', createProductRouter(productController));
+
+  app.use('/promotions', createPromotionRouter(promotionController));
 
   app.use((error: any, res: express.Response) => {
     console.error(error);
